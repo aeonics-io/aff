@@ -1,0 +1,41 @@
+
+body > div.modal {
+	position: fixed;
+	background-color: rgba(0,0,0,0.3);
+	top: 0; left: 0; right: 0; bottom: 0;
+	z-index: 999;
+}
+
+body > div.modal > div {
+	background-color: var(--background);
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	color: var(--text);
+	font-size: 16px;
+	left: 50%;
+	line-height: 1.5em;
+	padding: 30px;
+	position: absolute;
+	text-align: justify;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	min-width: 500px;
+	max-height: 95vh;
+	max-width: 95vw;
+	overflow-y: auto;
+}
+body > div.modal.promptable button { float: right; margin-bottom: 0; margin-left: 20px; width: auto; }
+body > div.modal.promptable option { color: #000; }
+body > div.modal.promptable input, body > div.modal.promptable select, body > div.modal.promptable textarea { 
+	clear: both; width: 100%; margin: 20px 0; padding: 10px;
+	background-color: transparent; border: 1px solid var(--text); color: var(--text);
+}
+body > div.modal.promptable textarea { min-height: 130px; }
+body > div.modal.promptable fieldset { margin: 0; padding: 0; border: 0; }
+body > div.modal.promptable fieldset input[type='checkbox'],
+body > div.modal.promptable fieldset input[type='radio'] { width: auto; margin: 10px; vertical-align: middle; }
+
+body > div.modal > div > aside.close {
+	font-family: Arial, sans-serif; color: var(--text); font-size: 28px; line-height: 10px;
+	display: block; position: absolute; top: 15px; right: 15px;
+	cursor: pointer;
+}

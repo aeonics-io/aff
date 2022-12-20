@@ -1,0 +1,37 @@
+
+#app_container.wait, #app_container .page.wait { min-height: 250px; }
+
+header { 
+	position: fixed; top: 0; left: 200px; right: 0;
+	overflow: hidden; text-overflow: ellipsis; padding: 20px 50px;
+}
+
+header #title { font-size: 1.2rem; color: var(--accent); }
+header #title::before { content: '\e5cc'; font-family: icon !important; font-feature-settings: "liga" 1; font-size: 1.4em; line-height: 1em; vertical-align: -0.3em; text-transform: none !important; }
+
+nav { 
+	position: fixed; top: 0; width: 200px; left: 0; bottom: 0; 
+	background: url(../img/logo.png) no-repeat;
+	background-size: auto 100px;
+	background-position: center 20px;
+	padding-top: 150px;
+}
+
+nav ul { list-tyle: none; padding: 0; margin: 0; }
+nav li a { display: block; padding: 8px 16px; overflow: hidden; text-overflow: ellipsis; }
+
+nav[data-current="home"] li[data-page="home"] a,
+nav[data-current="page1"] li[data-page="page1"] a,
+nav[data-current="page2"] li[data-page="page2"] a,
+nav[data-current="page3"] li[data-page="page3"] a { background-color: var(--accent); color: var(--background); }
+
+main {
+	position: fixed !important; top: calc(40px + 1.5rem); left: 200px; right: 0; bottom: 0;
+	background-color: white; overflow: auto; padding: 32px;
+	box-shadow: 1px 1px 5px rgba(0,0,0,0.1) inset;
+	border-top: 1px solid rgba(0,0,0,0.2);
+	border-left: 1px solid rgba(0,0,0,0.2);
+}
+main .page { min-height: calc(100vh - 104px - 1.2rem); }
+
+p { margin: 16px 0; }
