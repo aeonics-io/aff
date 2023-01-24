@@ -133,8 +133,8 @@ var x = new Promise((ok, nok) =>
 					Ajax.post('/api/security/login', {data: form}).then((result) => 
 					{
 						if( self.dom.querySelector('#login_remember').classList.contains('selected') )
-							localStorage.setItem('token', result.response.value);
-						Ajax.authorization = 'Bearer ' + result.response.value;
+							localStorage.setItem('token', result.response.token);
+						Ajax.authorization = 'Bearer ' + result.response.token;
 						self.check(true).then(
 							() => { self.dom.classList.remove('wait'); self.dom.remove(); self.grantor.ok();}, 
 							() => { self.dom.classList.remove('wait'); Ajax.authorization = null; Notify.error(Translator.get('login.failed')); }
