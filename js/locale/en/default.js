@@ -16,4 +16,5 @@ export default {
 	'login.failed': "Login failed",
 	'login.back': "Choose provider",
 	'login.provider': "Select a provider for authentication",
+	'login.otp': "Please enter your multifactor authentication code"
 };

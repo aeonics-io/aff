@@ -2,7 +2,7 @@
 let ae = globalThis.ae;
 var x = new Promise((ok, nok) =>
 {
-	ae.require('Page', 'Node', 'Notify', 'Ajax', 'Translator', 'page.login.css').then(([Page, Node, Notify, Ajax, Translator]) =>
+	ae.require('Page', 'Node', 'Notify', 'Modal', 'Ajax', 'Translator', 'page.login.css').then(([Page, Node, Notify, Modal, Ajax, Translator]) =>
 	{
 		// this is the URL that the security much check to decide if the user
 		// can proceed
@@ -142,6 +142,25 @@ var x = new Promise((ok, nok) =>
 					}, (error) => 
 					{
 						self.dom.classList.remove('wait');
+						if( error.status == 422 )
+						{
+							Modal.prompt(Translator.get('login.otp')).then((f) =>
+							{
+								if( !f.value.value )
+								{
+									self.dom.classList.remove('wait');
+									Notify.error(Translator.get('login.failed'));
+									return;
+								}
+								form.appendChild(Node.input({type: 'hidden', name: 'otp', value: f.value.value}));
+								self.login(form);
+							}, () =>
+							{
+								Notify.error(Translator.get('login.failed'));
+							});
+							return;
+						}
+						else if( form.lastChild.name == 'otp' ) form.lastChild.remove();
 						Notify.error(Translator.get('login.failed'));
 					});
 				}
