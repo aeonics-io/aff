@@ -54,14 +54,16 @@ var x = new Promise((ok, nok) =>
 					Node.button({click: function() { p.ok(form); }}, Translator.get('ok'))
 				], true);
 				
-				var escHandler = document.addEventListener("escape", function() { p.nok('escaped') });
-				var enterHandler = form.addEventListener("submit", function(e)
+				var escHandler = function() { p.nok('escaped') }; 
+				document.addEventListener("escape", escHandler);
+				var enterHandler = function(e)
 				{
 					e.preventDefault(); 
 					e.stopImmediatePropagation();
 					p.ok(form);
 					return false;
-				});
+				};
+				form.addEventListener("submit", enterHandler);
 				
 				p.finally(() =>
 				{

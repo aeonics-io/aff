@@ -112,7 +112,7 @@ var x = new Promise((ok, nok) =>
 						}
 						x.send(options.data);
 					}
-				}, (e) => { nok(e); });
+				});
 			}
 		}
 		
