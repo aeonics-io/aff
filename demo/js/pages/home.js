@@ -10,8 +10,7 @@ const { config } = globalThis;
 css('page.home');
 css('ae.tab', config.corePath);
 
-const page = new Page();
-Object.assign(page,
+class HomePage extends Page
 {
         async show()
         {
@@ -19,7 +18,8 @@ Object.assign(page,
                 document.getElementById('menu').dataset.current = 'home';
                 if( this.dom.children.length === 0 ) this.init();
                 return Promise.resolve();
-        },
+        }
+
         init()
         {
                 this.dom.append(
@@ -53,6 +53,8 @@ Object.assign(page,
                         ])
                 );
         }
-});
+}
+
+const page = new HomePage();
 
 export { page as default };

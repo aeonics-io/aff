@@ -6,8 +6,7 @@ import { css } from '../../ae/js/ae.js';
 
 css('page.template');
 
-const page = new Page();
-Object.assign(page,
+class TemplatePage extends Page
 {
         async show()
         {
@@ -31,6 +30,8 @@ Object.assign(page,
                 App.setContainer(container);
                 return Promise.resolve(null);
         }
-});
+}
+
+const page = new TemplatePage();
 
 export { page as default };
