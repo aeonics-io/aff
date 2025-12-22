@@ -1,14 +1,8 @@
-import { Page } from 'ae';
-import Node from '../../ae/js/Node.js';
-import Ajax from '../../ae/js/Ajax.js';
-import Modal from '../../ae/js/Modal.js';
-import Notify from '../../ae/js/Notify.js';
-import { css } from '../../ae/js/ae.js';
-
-const { config } = globalThis;
-
+import { Page, Node, Ajax, Modal, Notify, Translator } from 'core';
+import { css, config, locale } from 'core';
 css('page.home');
 css('ae.tab', config.corePath);
+locale('default');
 
 class HomePage extends Page
 {
@@ -23,8 +17,8 @@ class HomePage extends Page
         init()
         {
                 this.dom.append(
-                        Node.h2("Congratulations"),
-                        Node.p("This is your first page using the Aeonics Frontend Framework."),
+                        Node.h2(Translator.get('home.title')),
+                        Node.p(Translator.get('home.text')),
 
                         Node.div({className: 'tab', dataset: {tab: 1}},
                         [

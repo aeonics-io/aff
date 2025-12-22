@@ -1,6 +1,6 @@
-import Cookie from './Cookie.js';
+import { Cookie } from './Cookie.js';
 
-class Ajax
+export class Ajax
 {
 	static post(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'POST'}); }
 	static get(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'GET'}); }

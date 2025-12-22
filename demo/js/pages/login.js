@@ -1,19 +1,12 @@
-import { Page } from 'ae';
-import Node from '../../ae/js/Node.js';
-import Notify from '../../ae/js/Notify.js';
-import Modal from '../../ae/js/Modal.js';
-import Ajax from '../../ae/js/Ajax.js';
-import Translator, { locales } from '../../ae/js/Translator.js';
-import { css, urlValue, safeHtml } from '../../ae/js/ae.js';
-
+import { Page, Node, Notify, Modal, Ajax, Translator } from 'core';
+import { locale, css, urlValue, safeHtml } from 'core';
 css('page.login');
+locale('default');
 
 class LoginPage extends Page
 {
         async show()
         {
-                await locales('default').catch(() => {});
-
                 let _ok, _nok;
                 this.grantor = new Promise((ok, nok) => { _ok = ok; _nok = nok; });
                 this.grantor.ok = _ok;
@@ -164,5 +157,4 @@ class LoginPage extends Page
 }
 
 const page = new LoginPage();
-
 export { page as default };

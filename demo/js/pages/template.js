@@ -1,17 +1,11 @@
-import App from '../../ae/js/App.js';
-import { Page } from 'ae';
-import Node from '../../ae/js/Node.js';
-import Translator, { locales } from '../../ae/js/Translator.js';
-import { css } from '../../ae/js/ae.js';
-
+import { App, Page, Node, Translator, locale, css } from 'core';
 css('page.template');
+locale('default');
 
 class TemplatePage extends Page
 {
         async show()
         {
-                await locales('default').catch(() => {});
-
                 const container = Node.main({id: "app_container"});
 
                 document.body.append(
@@ -27,11 +21,10 @@ class TemplatePage extends Page
                         container
                 );
 
-                App.setContainer(container);
+                App.instance.container = container;
                 return Promise.resolve(null);
         }
 }
 
 const page = new TemplatePage();
-
 export { page as default };

@@ -13,36 +13,37 @@ AFF is a lightweight, pure-vanilla JavaScript starter for single page applicatio
 
 ## Getting started
 1. Serve the repo (or your site folder) from any static server. No bundler is required.
-2. In your HTML, configure the core and site paths on a shared global before starting the app using the import map alias `ae`:
+2. In your HTML, configure the core and site paths on a shared global before starting the app using the import map alias `core`:
    ```html
-   <script>globalThis.config = {};</script>
+   <script>
+     globalThis.config = {
+       corePath: new URL('../ae/', location.href).href,
+       sitePath: new URL('./', location.href).href,
+       noCache: false,
+       defaultPage: 'home',
+       defaultLocale: 'en',
+     };
+   </script>
    <script type="importmap">
      {
        "imports": {
-         "ae": "../ae/js/index.js"
+         "core": "../ae/js/index.js"
        }
      }
    </script>
    <script type="module">
-     import { App } from 'ae';
-
-     const { config } = globalThis;
-
-     config.corePath = new URL('../ae/', import.meta.url).href;
-     config.sitePath = new URL('./', import.meta.url).href;
-     config.cacheBust = false;
-
+     import { App } from 'core';
      const app = new App();
      app.setup();
    </script>
    ```
    The `setup()` call waits for DOM readiness, loads core CSS, optional translation files, and registers hash-based navigation.
 
-The import map keeps your page modules free from long relative paths—`ae/js/index.js` re-exports all public classes (`App`, `Page`, `Node`, `Ajax`, `Notify`, `Modal`, `Translator`, `Cookie`) plus utilities and helpers from `ae.js`.
+The import map keeps your page modules free from long relative paths and ships utilities and helpers from the core classes.
 
 ## Core concepts
-- **Routing via hash fragments.** `App` listens for `hashchange` and loads pages from `./js/pages/<name>.js` relative to `sitePath`. `#home` loads `home.js`; an empty hash defaults to `home`. Pages are dynamically imported and appended to `app.container`.
-- **Pages are simple modules.** Export a `Page` instance, subclass, or a plain object merged into a `Page`. Implement `show()` (and optionally `hide()`) and populate `this.dom` with your UI.
+- **Routing via hash fragments.** `App` inspects the URL and  loads pages from `./js/pages/<name>.js` where the name is pulled from the `hash (#)` part of the URL. I.e.: `#home` loads `home.js`.
+- **Pages are simple modules.** Export a `Page` subclass: Implement `show()` (and optionally `hide()`) and populate `this.dom` with your UI.
 - **DOM helpers.** `Node` builds elements without templating engines (e.g., `Node.div({className: 'box'}, [Node.h2('Title'), Node.p('Copy')])`).
 - **REST-friendly fetch.** `Ajax.fetch/get/post` wrap `fetch` with timeouts, credential support, and automatic JSON parsing. Authorization headers can be provided globally or per call.
 - **UX utilities.**
@@ -50,16 +51,16 @@ The import map keeps your page modules free from long relative paths—`ae/js/in
   - `Modal` provides alert/confirm/prompt helpers and custom modal scaffolding.
   - `Translator` lazy-loads locale bundles (`./js/locale/<lang>/<name>.js`) and replaces `{}` placeholders.
   - `Cookie` offers small helpers to set/get/unset cookies with sane defaults.
-- **Configuration.** Create `globalThis.config = {}` in your HTML before importing modules, then set `corePath`, `sitePath`, cache busting, and shared CSS (`coreCss`) values. `ae/js/ae.js` reads from that shared object and fills in any missing defaults. Use `App.setContainer()` to point rendering at a layout container your template page sets up.
+- **Configuration.** Create `globalThis.config = {}` in your HTML before importing modules, then set `corePath` and `sitePath` values. The core reads from that shared object and loads the site defaults.
 
 ## Creating your own pages
-1. Create `js/pages/<page>.js` under your site folder.
-2. Export a `Page` instance or class:
+1. Create `js/pages/dashboard.js` under your site folder.
+2. Export a `Page` subclass:
    ```js
-   import { Page, Node } from 'ae';
+   import { Page, Node } from 'core';
 
-   const page = new Page();
-   Object.assign(page, {
+   class DashboardPage extends Page
+   {
      async show() {
        document.title = 'Dashboard';
        if (this.dom.children.length === 0) this.init();
@@ -72,20 +73,19 @@ The import map keeps your page modules free from long relative paths—`ae/js/in
      }
    });
 
-   export default page;
+   const page = new CustomPage();
+   export { page as default };
    ```
 3. Navigate to `#dashboard` to load it. Implement `hide()` if you need teardown logic when leaving the page.
 
 ## Loading styles
 - Call `css('<name>')` to load `<sitePath>/css/<name>.css` (the `.css` suffix is optional). Calls are asynchronous by design—invoke
-  them at the top of your module to start loading early. Pass a second argument to override the base root (e.g. `css('ae.modal', config.corePath)`),
-  which automatically resolves to the `css/` subfolder. Requests are deduped per final URL so repeated calls are safe.
+  them at the top of your module to start loading early. Requests are deduped per final URL so repeated calls are safe.
 
 ## Working with translations
 - Place translation files under `js/locale/<lang>/<name>.js` exporting a key/value object.
-- Call `locales('<name>')` to pull the bundle for the current locale from `<sitePath>/js/locale/<lang>/`. Provide an alternate base
-  path if needed (e.g. `locales('default', config.corePath)`) and the helper will target its `js/locale/` folder. Await this call before using translations so
-  the bundle is available, then use `Translator.get('key', arg1, arg2)` to inject values into `{}` placeholders.
+- Call `locales('<name>')` to pull the bundle for the current locale from `<sitePath>/js/locale/<lang>/`. This call is synchronous so
+  the bundle is available for the rest of the code, then use `Translator.get('key')` to inject values in your page.
 
 ## Notifications and modals
 - Toasts: `Notify.success('Saved')`, `Notify.error('Failed')`, etc. Multiple toasts queue with a cap to avoid overload.
