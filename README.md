@@ -13,11 +13,17 @@ AFF is a lightweight, pure-vanilla JavaScript starter for single page applicatio
 
 ## Getting started
 1. Serve the repo (or your site folder) from any static server. No bundler is required.
-2. In your HTML, configure the core and site paths, then start the app:
+2. In your HTML, configure the core and site paths, then start the app using the import map alias `ae`:
    ```html
+   <script type="importmap">
+     {
+       "imports": {
+         "ae": "../ae/js/index.js"
+       }
+     }
+   </script>
    <script type="module">
-     import App from '../ae/js/App.js';
-     import { setConfig } from '../ae/js/ae.js';
+     import { App, setConfig } from 'ae';
 
      const corePath = new URL('../ae/', import.meta.url);
      const sitePath = new URL('./', import.meta.url);
@@ -28,6 +34,8 @@ AFF is a lightweight, pure-vanilla JavaScript starter for single page applicatio
    </script>
    ```
    The `setup()` call waits for DOM readiness, loads core CSS, optional translation files, and registers hash-based navigation.
+
+The import map keeps your page modules free from long relative paths—`ae/js/index.js` re-exports all public classes (`App`, `Page`, `Node`, `Ajax`, `Notify`, `Modal`, `Translator`, `Cookie`) plus configuration helpers from `ae.js`.
 
 ## Core concepts
 - **Routing via hash fragments.** `App` listens for `hashchange` and loads pages from `./js/pages/<name>.js` relative to `sitePath`. `#home` loads `home.js`; an empty hash defaults to `home`. Pages are dynamically imported and appended to `app.container`.
@@ -45,8 +53,7 @@ AFF is a lightweight, pure-vanilla JavaScript starter for single page applicatio
 1. Create `js/pages/<page>.js` under your site folder.
 2. Export a `Page` instance or class:
    ```js
-   import Page from '../../ae/js/Page.js';
-   import Node from '../../ae/js/Node.js';
+   import { Page, Node } from 'ae';
 
    const page = new Page();
    Object.assign(page, {

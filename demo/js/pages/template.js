@@ -1,5 +1,5 @@
 import App from '../../ae/js/App.js';
-import Page from '../../ae/js/Page.js';
+import { Page } from 'ae';
 import Node from '../../ae/js/Node.js';
 import Translator from '../../ae/js/Translator.js';
 import { loadCss } from '../../ae/js/ae.js';

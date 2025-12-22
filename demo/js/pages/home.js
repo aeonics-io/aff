@@ -1,4 +1,4 @@
-import Page from '../../ae/js/Page.js';
+import { Page } from 'ae';
 import Node from '../../ae/js/Node.js';
 import Ajax from '../../ae/js/Ajax.js';
 import Translator from '../../ae/js/Translator.js';

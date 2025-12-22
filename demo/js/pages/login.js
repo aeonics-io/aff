@@ -1,4 +1,4 @@
-import Page from '../../ae/js/Page.js';
+import { Page } from 'ae';
 import Node from '../../ae/js/Node.js';
 import Notify from '../../ae/js/Notify.js';
 import Modal from '../../ae/js/Modal.js';

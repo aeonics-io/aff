@@ -8,9 +8,15 @@
                 <meta http-equiv="pragma" content="no-cache" />
                 <meta http-equiv="expires" content="0" />
 
+                <script type="importmap">
+                        {
+                                "imports": {
+                                        "ae": "../ae/js/index.js"
+                                }
+                        }
+                </script>
                 <script type="module">
-                        import App from '../ae/js/App.js';
-                        import { setConfig } from '../ae/js/ae.js';
+                        import { App, setConfig } from 'ae';
 
                         const cacheBust = new URLSearchParams(location.search).get('cacheBust') === 'true';
                         const corePath = new URL('../ae/', import.meta.url);
