@@ -35,7 +35,7 @@ Object.assign(page,
                         container
                 );
 
-                App.container = container;
+                App.setContainer(container);
                 return Promise.resolve(null);
         }
 });

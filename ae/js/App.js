@@ -9,6 +9,7 @@ class App
         {
                 setConfig(config);
                 const cfg = getConfig();
+                App.instance = this;
                 this.container = document.body;
                 this.current = null;
                 this.siteBase = cfg.sitePath instanceof URL ? cfg.sitePath : new URL(cfg.sitePath, location.href);
@@ -46,6 +47,16 @@ class App
                 await this.navigate(hash);
         }
 
+        setContainer(container)
+        {
+                this.container = container;
+        }
+
+        static setContainer(container)
+        {
+                if( App.instance ) App.instance.setContainer(container);
+        }
+
         async navigate(hash)
         {
                 const name = (/^#([^?]*)/.exec(hash||'#')||['','home'])[1]||'home';
@@ -57,11 +68,12 @@ class App
                         const page = await this.importPage(name);
                         this.current = page;
                         await page.show();
-                        this.container.classList.remove('wait');
                         this.container.appendChild(page.dom);
                 } catch(e) {
                         Notify.error('' + e);
                         console.warn(e);
+                } finally {
+                        this.container.classList.remove('wait');
                 }
         }
 
