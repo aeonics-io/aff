@@ -96,8 +96,18 @@ class Modal
                         {
                                 p.dom.firstChild.appendChild(Node.aside({className: 'close', click: function() { p.nok("closed"); }}, "&times;"));
                                 p._handler_1 = function(){ const n = document.querySelectorAll('body > div.modal'); if( n && p.dom == n[n.length-1] ) p.nok("escaped"); };
-                                p._handler_2 = function(e) { p.isDownOnDom = (e.target === p.dom ); };
-                                p._handler_3 = function(e) { if( e.target === p.dom && p.isDownOnDom ) p._handler_1(); };
+                                p._handler_2 = function(e)
+                                {
+                                        const dialog = p.dom.firstElementChild;
+                                        const clickedBackdrop = (e.target === p.dom) && (!dialog || !dialog.contains(e.target));
+                                        const clickedDialog = dialog && dialog.contains(e.target);
+                                        p.isDownOnBackdrop = clickedBackdrop && !clickedDialog;
+                                };
+                                p._handler_3 = function(e)
+                                {
+                                        if( e.target === p.dom && p.isDownOnBackdrop ) p._handler_1();
+                                        p.isDownOnBackdrop = false;
+                                };
                                 document.addEventListener('escape', p._handler_1);
                                 document.body.addEventListener('mousedown', p._handler_2);
                                 document.body.addEventListener('mouseup', p._handler_3);
