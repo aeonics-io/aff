@@ -16,9 +16,7 @@ function ensureCss()
         return loadCss(new URL('../css/page.login.css', import.meta.url));
 }
 
-const page = new Page();
-
-Object.assign(page,
+class LoginPage extends Page
 {
         async show()
         {
@@ -44,7 +42,7 @@ Object.assign(page,
                 if( urlValue('auth') == 'fail' ) setTimeout(function() { Notify.error(Translator.get('login.failed')); }, 750);
 
                 return this.grantor;
-        },
+        }
 
         showList()
         {
@@ -75,7 +73,7 @@ Object.assign(page,
                                 }
                         }
                 }, () => { this.dom.classList.remove('wait');  this.grantor.nok("F1"); });
-        },
+        }
 
         showForm(showBackButton)
         {
@@ -105,7 +103,7 @@ Object.assign(page,
                 {
                         this.dom.lastChild.append(Node.span({className: "back", click: function() { self.showList(); }}, Translator.get('login.back')));
                 }
-        },
+        }
 
         check(fresh)
         {
@@ -130,7 +128,7 @@ Object.assign(page,
                                 else { self.dom.classList.remove('wait'); nok("F2"); }
                         }, () => { self.dom.classList.remove('wait'); nok("F1"); });
                 });
-        },
+        }
 
         login(form)
         {
@@ -172,6 +170,8 @@ Object.assign(page,
                         }
                 });
         }
-});
+}
+
+const page = new LoginPage();
 
 export { page as default };
