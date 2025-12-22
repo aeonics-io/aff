@@ -12,8 +12,7 @@ function ensureCss()
         return loadCss(new URL('../css/page.template.css', import.meta.url));
 }
 
-const page = new Page();
-Object.assign(page,
+class TemplatePage extends Page
 {
         async show()
         {
@@ -38,6 +37,8 @@ Object.assign(page,
                 App.setContainer(container);
                 return Promise.resolve(null);
         }
-});
+}
+
+const page = new TemplatePage();
 
 export { page as default };
