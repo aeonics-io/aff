@@ -1,23 +1,16 @@
 import App from '../../ae/js/App.js';
 import { Page } from 'ae';
 import Node from '../../ae/js/Node.js';
-import Translator from '../../ae/js/Translator.js';
-import { loadCss } from '../../ae/js/ae.js';
+import Translator, { locales } from '../../ae/js/Translator.js';
+import { css } from '../../ae/js/ae.js';
 
-let cssLoaded = false;
-function ensureCss()
-{
-        if( cssLoaded ) return Promise.resolve();
-        cssLoaded = true;
-        return loadCss(new URL('../css/page.template.css', import.meta.url));
-}
+css('page.template');
 
 class TemplatePage extends Page
 {
         async show()
         {
-                await ensureCss();
-                await Translator.load('default').catch(() => {});
+                await locales('default').catch(() => {});
 
                 const container = Node.main({id: "app_container"});
 

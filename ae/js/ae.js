@@ -1,11 +1,15 @@
 const defaultConfig = {
         cacheBust: false,
-        corePath: new URL('..', import.meta.url),
-        sitePath: new URL('../demo/', import.meta.url),
+        corePath: new URL('..', import.meta.url).href,
+        sitePath: new URL('../demo/', import.meta.url).href,
         coreCss: ['ae.app.css', 'ae.modal.css', 'ae.notify.css']
 };
 
-let activeConfig = {...defaultConfig};
+const config = globalThis.config || (globalThis.config = {});
+for( const [key, value] of Object.entries(defaultConfig) )
+{
+        if( !(key in config) ) config[key] = value;
+}
 
 const ready = new Promise((resolve) => {
         if( document.readyState === 'interactive' || document.readyState === 'complete' ) {
@@ -43,32 +47,23 @@ if( typeof Array.prototype.last === 'undefined' ) {
 
 const loadedStyles = new Set();
 
-function setConfig(config = {}) {
-        const overrides = {...config};
-        const corePath = overrides.corePath ? new URL(overrides.corePath, location.href) : defaultConfig.corePath;
-        const sitePath = overrides.sitePath ? new URL(overrides.sitePath, location.href) : defaultConfig.sitePath;
-
-        activeConfig = {
-                ...defaultConfig,
-                ...overrides,
-                corePath,
-                sitePath
-        };
-}
-
-function getConfig() {
-        return activeConfig;
+function resolveBase(root, subpath = '') {
+        const base = root || config.sitePath;
+        const href = base instanceof URL ? base : new URL(base || location.href, location.href);
+        return subpath ? new URL(subpath, href) : href;
 }
 
 function cacheBustUrl(url) {
         const href = url instanceof URL ? url : new URL(url, location.href);
-        if( !activeConfig.cacheBust ) return href.toString();
+        if( !config.cacheBust ) return href.toString();
         href.searchParams.set('_', Date.now());
         return href.toString();
 }
 
-function loadCss(path) {
-        const url = cacheBustUrl(path instanceof URL ? path : new URL(path, location.href));
+function css(path, base = config.sitePath) {
+        const cssPath = (typeof path === 'string' && !path.split(/[?#]/)[0].endsWith('.css')) ? `${path}.css` : path;
+        const href = cssPath instanceof URL ? cssPath : new URL(cssPath, resolveBase(base, './css/'));
+        const url = cacheBustUrl(href);
         if( loadedStyles.has(url) ) return Promise.resolve(document.querySelector(`link[href="${url}"]`));
 
         return new Promise((resolve, reject) => {
@@ -98,4 +93,4 @@ function urlValue(key) {
         return hashParams.get(key);
 }
 
-export { ready, setConfig, getConfig, cacheBustUrl, loadCss, safeHtml, urlValue };
+export { ready, config, cacheBustUrl, css, safeHtml, urlValue, resolveBase };

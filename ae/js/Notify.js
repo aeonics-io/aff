@@ -1,14 +1,9 @@
 import Node from './Node.js';
-import { loadCss, getConfig, safeHtml } from './ae.js';
+import { css, safeHtml } from './ae.js';
 
-let cssLoaded = false;
-function ensureCss()
-{
-        if( cssLoaded ) return Promise.resolve();
-        cssLoaded = true;
-        const config = getConfig();
-        return loadCss(new URL('./css/ae.notify.css', config.corePath));
-}
+const { config } = globalThis;
+
+css('ae.notify', config.corePath);
 
 class Notify
 {
@@ -20,7 +15,6 @@ class Notify
         static async show(message, level)
         {
                 if( !message ) return;
-                await ensureCss();
                 if( Notify.dom.children.length > 3 ) { console.warn(message); return; }
 
                 let timeout;

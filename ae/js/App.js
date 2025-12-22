@@ -1,27 +1,27 @@
 import Page from './Page.js';
 import Notify from './Notify.js';
-import Translator from './Translator.js';
-import { ready, setConfig, getConfig, loadCss, cacheBustUrl } from './ae.js';
+import { locales } from './Translator.js';
+import { ready, css, cacheBustUrl, resolveBase } from './ae.js';
+
+const { config } = globalThis;
 
 class App
 {
-        constructor(config = {})
+        constructor(overrides = {})
         {
-                setConfig(config);
-                const cfg = getConfig();
+                Object.assign(config, overrides);
                 App.instance = this;
                 this.container = document.body;
                 this.current = null;
-                this.siteBase = cfg.sitePath instanceof URL ? cfg.sitePath : new URL(cfg.sitePath, location.href);
+                this.siteBase = resolveBase(config.sitePath);
                 this.pagesBase = new URL('./js/pages/', this.siteBase);
         }
 
         async setup()
         {
-                const cfg = getConfig();
                 await ready;
-                await Promise.all(cfg.coreCss.map((css) => loadCss(new URL(`./css/${css}`, cfg.corePath)).catch(() => {})));
-                await Translator.load('default').catch(() => {});
+                config.coreCss.forEach((sheet) => css(sheet, config.corePath).catch(() => {}));
+                await locales('default').catch(() => {});
 
                 window.addEventListener('hashchange', () => { this.navigate(location.hash || '#'); });
                 await this.bootstrapPages();
