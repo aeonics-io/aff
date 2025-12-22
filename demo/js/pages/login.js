@@ -3,27 +3,19 @@ import Node from '../../ae/js/Node.js';
 import Notify from '../../ae/js/Notify.js';
 import Modal from '../../ae/js/Modal.js';
 import Ajax from '../../ae/js/Ajax.js';
-import Translator from '../../ae/js/Translator.js';
-import { loadCss, urlValue, safeHtml } from '../../ae/js/ae.js';
+import Translator, { locales } from '../../ae/js/Translator.js';
+import { css, urlValue, safeHtml } from '../../ae/js/ae.js';
+
+css('page.login');
 
 const URL_TO_CHECK = '/api/admin/';
-
-let cssLoaded = false;
-function ensureCss()
-{
-        if( cssLoaded ) return Promise.resolve();
-        cssLoaded = true;
-        return loadCss(new URL('../css/page.login.css', import.meta.url));
-}
-
 const page = new Page();
 
 Object.assign(page,
 {
         async show()
         {
-                await ensureCss();
-                await Translator.load('default').catch(() => {});
+                await locales('default').catch(() => {});
 
                 let _ok, _nok;
                 this.grantor = new Promise((ok, nok) => { _ok = ok; _nok = nok; });

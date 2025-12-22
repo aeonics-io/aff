@@ -8,6 +8,7 @@
                 <meta http-equiv="pragma" content="no-cache" />
                 <meta http-equiv="expires" content="0" />
 
+                <script>globalThis.config = {};</script>
                 <script type="importmap">
                         {
                                 "imports": {
@@ -16,14 +17,15 @@
                         }
                 </script>
                 <script type="module">
-                        import { App, setConfig } from 'ae';
+                        import { App } from 'ae';
 
-                        const cacheBust = new URLSearchParams(location.search).get('cacheBust') === 'true';
-                        const corePath = new URL('../ae/', import.meta.url);
-                        const sitePath = new URL('./', import.meta.url);
+                        const { config } = globalThis;
 
-                        setConfig({corePath, sitePath, cacheBust});
-                        const app = new App({corePath, sitePath, cacheBust});
+                        config.cacheBust = new URLSearchParams(location.search).get('cacheBust') === 'true';
+                        config.corePath = new URL('../ae/', import.meta.url).href;
+                        config.sitePath = new URL('./', import.meta.url).href;
+
+                        const app = new App();
                         app.setup();
                 </script>
         </head>

@@ -13,8 +13,9 @@ AFF is a lightweight, pure-vanilla JavaScript starter for single page applicatio
 
 ## Getting started
 1. Serve the repo (or your site folder) from any static server. No bundler is required.
-2. In your HTML, configure the core and site paths, then start the app using the import map alias `ae`:
+2. In your HTML, configure the core and site paths on a shared global before starting the app using the import map alias `ae`:
    ```html
+   <script>globalThis.config = {};</script>
    <script type="importmap">
      {
        "imports": {
@@ -23,19 +24,21 @@ AFF is a lightweight, pure-vanilla JavaScript starter for single page applicatio
      }
    </script>
    <script type="module">
-     import { App, setConfig } from 'ae';
+     import { App } from 'ae';
 
-     const corePath = new URL('../ae/', import.meta.url);
-     const sitePath = new URL('./', import.meta.url);
+     const { config } = globalThis;
 
-     setConfig({ corePath, sitePath, cacheBust: false });
-     const app = new App({ corePath, sitePath });
+     config.corePath = new URL('../ae/', import.meta.url).href;
+     config.sitePath = new URL('./', import.meta.url).href;
+     config.cacheBust = false;
+
+     const app = new App();
      app.setup();
    </script>
    ```
    The `setup()` call waits for DOM readiness, loads core CSS, optional translation files, and registers hash-based navigation.
 
-The import map keeps your page modules free from long relative paths—`ae/js/index.js` re-exports all public classes (`App`, `Page`, `Node`, `Ajax`, `Notify`, `Modal`, `Translator`, `Cookie`) plus configuration helpers from `ae.js`.
+The import map keeps your page modules free from long relative paths—`ae/js/index.js` re-exports all public classes (`App`, `Page`, `Node`, `Ajax`, `Notify`, `Modal`, `Translator`, `Cookie`) plus utilities and helpers from `ae.js`.
 
 ## Core concepts
 - **Routing via hash fragments.** `App` listens for `hashchange` and loads pages from `./js/pages/<name>.js` relative to `sitePath`. `#home` loads `home.js`; an empty hash defaults to `home`. Pages are dynamically imported and appended to `app.container`.
@@ -47,7 +50,7 @@ The import map keeps your page modules free from long relative paths—`ae/js/in
   - `Modal` provides alert/confirm/prompt helpers and custom modal scaffolding.
   - `Translator` lazy-loads locale bundles (`./js/locale/<lang>/<name>.js`) and replaces `{}` placeholders.
   - `Cookie` offers small helpers to set/get/unset cookies with sane defaults.
-- **Configuration.** `ae/js/ae.js` exposes `setConfig`/`getConfig` for cache busting, core/site paths, and shared CSS (`coreCss`). Use `App.setContainer()` to point rendering at a layout container your template page sets up.
+- **Configuration.** Create `globalThis.config = {}` in your HTML before importing modules, then set `corePath`, `sitePath`, cache busting, and shared CSS (`coreCss`) values. `ae/js/ae.js` reads from that shared object and fills in any missing defaults. Use `App.setContainer()` to point rendering at a layout container your template page sets up.
 
 ## Creating your own pages
 1. Create `js/pages/<page>.js` under your site folder.
@@ -73,9 +76,16 @@ The import map keeps your page modules free from long relative paths—`ae/js/in
    ```
 3. Navigate to `#dashboard` to load it. Implement `hide()` if you need teardown logic when leaving the page.
 
+## Loading styles
+- Call `css('<name>')` to load `<sitePath>/css/<name>.css` (the `.css` suffix is optional). Calls are asynchronous by design—invoke
+  them at the top of your module to start loading early. Pass a second argument to override the base root (e.g. `css('ae.modal', config.corePath)`),
+  which automatically resolves to the `css/` subfolder. Requests are deduped per final URL so repeated calls are safe.
+
 ## Working with translations
 - Place translation files under `js/locale/<lang>/<name>.js` exporting a key/value object.
-- Call `Translator.load('<name>')` to pull the bundle for the current locale (falls back to English). Use `Translator.get('key', arg1, arg2)` to inject values into `{}` placeholders.
+- Call `locales('<name>')` to pull the bundle for the current locale from `<sitePath>/js/locale/<lang>/`. Provide an alternate base
+  path if needed (e.g. `locales('default', config.corePath)`) and the helper will target its `js/locale/` folder. Await this call before using translations so
+  the bundle is available, then use `Translator.get('key', arg1, arg2)` to inject values into `{}` placeholders.
 
 ## Notifications and modals
 - Toasts: `Notify.success('Saved')`, `Notify.error('Failed')`, etc. Multiple toasts queue with a cap to avoid overload.

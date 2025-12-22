@@ -1,21 +1,15 @@
 import Node from './Node.js';
 import Translator from './Translator.js';
-import { loadCss, getConfig } from './ae.js';
+import { css } from './ae.js';
 
-let cssLoaded = false;
-function ensureCss()
-{
-        if( cssLoaded ) return Promise.resolve();
-        cssLoaded = true;
-        const config = getConfig();
-        return loadCss(new URL('./css/ae.modal.css', config.corePath));
-}
+const { config } = globalThis;
+
+css('ae.modal', config.corePath);
 
 class Modal
 {
         static async alert(message)
         {
-                        await ensureCss();
                         const p = Modal.custom(
                         [
                                 Node.p(message),
@@ -31,7 +25,6 @@ class Modal
 
         static async confirm(message, buttons, escapable)
         {
-                        await ensureCss();
                         if( !buttons || !Array.isArray(buttons) || buttons.length == 0 )
                                 buttons = [Translator.get('ok'), Translator.get('cancel')];
 
@@ -50,7 +43,6 @@ class Modal
 
         static async prompt(message, form)
         {
-                        await ensureCss();
                         let p;
                         if( !form || !(form instanceof HTMLElement) )
                                 form = Node.form(Node.input({type: 'text', name: 'value', value: ""+(form||""), keydown: function(e) { if( e.keyCode === 13 ) { p.ok(form); e.stopImmediatePropagation(); e.preventDefault(); return false; } }}));

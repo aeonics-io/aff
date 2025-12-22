@@ -1,29 +1,20 @@
 import { Page } from 'ae';
 import Node from '../../ae/js/Node.js';
 import Ajax from '../../ae/js/Ajax.js';
-import Translator from '../../ae/js/Translator.js';
 import Modal from '../../ae/js/Modal.js';
 import Notify from '../../ae/js/Notify.js';
-import { loadCss, getConfig } from '../../ae/js/ae.js';
+import { css } from '../../ae/js/ae.js';
 
-let cssLoaded = false;
-function ensureCss()
-{
-        if( cssLoaded ) return Promise.resolve();
-        cssLoaded = true;
-        const config = getConfig();
-        return Promise.all([
-                loadCss(new URL('../css/page.home.css', import.meta.url)),
-                loadCss(new URL('./css/ae.tab.css', config.corePath))
-        ]);
-}
+const { config } = globalThis;
+
+css('page.home');
+css('ae.tab', config.corePath);
 
 const page = new Page();
 Object.assign(page,
 {
         async show()
         {
-                await ensureCss();
                 document.getElementById('title').textContent = 'Home';
                 document.getElementById('menu').dataset.current = 'home';
                 if( this.dom.children.length === 0 ) this.init();
