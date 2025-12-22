@@ -1,0 +1,84 @@
+import Page from './Page.js';
+import Notify from './Notify.js';
+import Translator from './Translator.js';
+import { ready, setConfig, getConfig, loadCss, cacheBustUrl } from './ae.js';
+
+class App
+{
+        constructor(config = {})
+        {
+                setConfig(config);
+                const cfg = getConfig();
+                this.container = document.body;
+                this.current = null;
+                this.siteBase = cfg.sitePath instanceof URL ? cfg.sitePath : new URL(cfg.sitePath, location.href);
+                this.pagesBase = new URL('./js/pages/', this.siteBase);
+        }
+
+        async setup()
+        {
+                const cfg = getConfig();
+                await ready;
+                await Promise.all(cfg.coreCss.map((css) => loadCss(new URL(`./css/${css}`, cfg.corePath)).catch(() => {})));
+                await Translator.load('default').catch(() => {});
+
+                window.addEventListener('hashchange', () => { this.navigate(location.hash || '#'); });
+                await this.bootstrapPages();
+        }
+
+        async bootstrapPages()
+        {
+                const hash = location.hash || '#';
+                try
+                {
+                        const login = await this.importPage('login', true);
+                        if( login ) await login.show();
+                }
+                catch(e) { console.warn(e); }
+
+                try
+                {
+                        const template = await this.importPage('template', true);
+                        if( template ) await template.show();
+                }
+                catch(e) { console.warn(e); }
+
+                await this.navigate(hash);
+        }
+
+        async navigate(hash)
+        {
+                const name = (/^#([^?]*)/.exec(hash||'#')||['','home'])[1]||'home';
+                try {
+                        if( this.current ) await this.current.hide();
+                        if( this.current && this.current.dom ) this.current.dom.remove();
+
+                        this.container.classList.add('wait');
+                        const page = await this.importPage(name);
+                        this.current = page;
+                        await page.show();
+                        this.container.classList.remove('wait');
+                        this.container.appendChild(page.dom);
+                } catch(e) {
+                        Notify.error('' + e);
+                        console.warn(e);
+                }
+        }
+
+        async importPage(name, optional = false)
+        {
+                try {
+                        const url = cacheBustUrl(new URL(`./${name}.js`, this.pagesBase));
+                        const module = await import(url);
+                        if( module.default instanceof Page ) return module.default;
+                        if( typeof module.default === 'function' ) return new module.default();
+                        if( module.default ) return Object.assign(new Page(), module.default);
+                        throw new Error(`Page "${name}" has no default export`);
+                } catch(e) {
+                        if( optional ) return null;
+                        throw e;
+                }
+        }
+}
+
+export { App as default };
