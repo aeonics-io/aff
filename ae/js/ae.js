@@ -1,4 +1,6 @@
 export const config = globalThis.config || (globalThis.config = {});
+export const now = new Date().getTime();
+
 export const ready = new Promise((resolve) => 
 {
 	if( document.readyState === 'interactive' || document.readyState === 'complete' )
@@ -9,19 +11,19 @@ export const ready = new Promise((resolve) =>
 
 document.addEventListener('keyup', function(e)
 {
-	if( e.keyCode == 13 )
+	if( e.key == "Enter" )
 	{
 		const ev = new Event('enter', {cancelable: true});
 		ev.origin = e;
 		this.dispatchEvent(ev);
 	}
-	else if( e.keyCode == 27 )
+	else if( e.key == "Escape" )
 	{
 		const ev = new Event('escape', {cancelable: true});
 		ev.origin = e;
 		this.dispatchEvent(ev);
 	}
-	else if( e.keyCode == 46 )
+	else if( e.key == "Delete" )
 	{
 		const ev = new Event('delete', {cancelable: true});
 		ev.origin = e;
@@ -45,7 +47,7 @@ export function css(path, base = config.sitePath)
 	}
 	if( config.noCache )
 	{
-		path += '?_', Date.now();
+		path += '?_' + now;
 	}
 	else
 	{
@@ -60,15 +62,18 @@ export function css(path, base = config.sitePath)
 	document.head.appendChild(link);
 }
 
-export function safeHtml(text) {
+export function safeHtml(text)
+{
 	if( !text ) return '';
+	if( typeof text !== 'string' ) text = '' + text;
 	return text.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&quot;');
 }
 
-export function urlValue(key) {
+export function urlValue(key)
+{
 	const params = new URLSearchParams(location.search);
 	const value = params.get(key);
 	if( value ) return value;

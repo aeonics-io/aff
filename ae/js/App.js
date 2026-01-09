@@ -1,6 +1,6 @@
 import { Page } from './Page.js';
 import { Notify } from './Notify.js';
-import { ready, config, css } from './ae.js';
+import { ready, config, css, now } from './ae.js';
 css('ae.app', config.corePath);
 
 export class App
@@ -21,24 +21,32 @@ export class App
 		const hash = location.hash || '#';
 		try
 		{
+			const preload = this.importPage('template', true);
 			const login = await this.importPage('login', true);
-			if( login ) await login.show();
+			if( login )
+			{
+				try
+				{
+					await login.show();
+					await login.hide();
+				}
+				catch(e) { console.warn(e); return; }
+			}
+			
+			const template = await preload;
+			if( template )
+			{
+				await template.show();
+			}
 		}
-		catch(e) { console.warn(e); }
-
-		try
-		{
-			const template = await this.importPage('template', true);
-			if( template ) await template.show();
-		}
-		catch(e) { console.warn(e); }
+		catch(e) { console.warn(e); return; }
 
 		await this.navigate(hash);
 	}
 
 	async navigate(hash)
 	{
-		const name = (/^#([^?]*)/.exec(hash||'#')||['',null])[1]||config.defaultPage||'home';
+		const name = (/^#([^\/?]*)/.exec(hash||'#')||['',null])[1]||config.defaultPage||'home';
 		try
 		{
 			if( this.current ) await this.current.hide();
@@ -52,7 +60,7 @@ export class App
 		}
 		catch(e)
 		{
-			Notify.error('' + e);
+			Notify.warning('Page "' + name + '" not found');
 			console.warn(e);
 		}
 		finally
@@ -74,17 +82,18 @@ export class App
 			}
 			if( config.noCache )
 			{
-				path += '?_', Date.now();
+				path += '?_' + now;
 			}
 			
 			const module = await import(path);
-			if( module.default instanceof Page ) return module.default;
-			//else if( typeof module.default === 'function' ) return new module.default();
-			//else if( module.default ) return Object.assign(new Page(), module.default);
-			else throw new Error("Page '" + name + "' is not valid");
+			if( module.default instanceof Page )
+				return module.default;
+			else
+				throw new Error("Page '" + name + "' is not valid");
 		}
 		catch(e)
 		{
+			console.warn(e);
 			if( optional ) return null;
 			throw e;
 		}
