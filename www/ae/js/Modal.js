@@ -6,7 +6,7 @@ locale('default', config.corePath);
 	
 export class Modal
 {
-	static async alert(message)
+	static alert(message)
 	{
 		const p = Modal.custom(
 		[
@@ -22,7 +22,7 @@ export class Modal
 		return p;
 	}
 
-	static async confirm(message, buttons, escapable)
+	static confirm(message, buttons, escapable)
 	{
 		if( !buttons || !Array.isArray(buttons) || buttons.length == 0 )
 			buttons = [Translator.get('ok'), Translator.get('cancel')];
@@ -40,7 +40,7 @@ export class Modal
 		return p;
 	}
 
-	static async prompt(message, form)
+	static prompt(message, form)
 	{
 		let p;
 		if( !form || !(form instanceof HTMLElement) )

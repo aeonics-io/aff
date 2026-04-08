@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Example</title>
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<style>
+			:root {
+				--text: #000000 !important;
+				--accent: #3DA4FF !important;
+				--background: #ffffff !important;
+			}
+		</style>
+		<script>
+			globalThis.config = {
+				corePath: new URL('../ae/', location.href).href,
+				sitePath: new URL('./example', location.href).href,
+				noCache: false,
+				defaultPage: 'home',
+				defaultLocale: 'en',
+			};
+		</script>
+		<script type="importmap">
+			{ "imports": { "core": "../ae/index.js" } }
+		</script>
+		<script type="module">
+			import { App } from 'core';
+			const app = new App();
+			app.setup();
+		</script>
+	</head>
+	<body>
+		<noscript>Javascript is required to view this page</noscript>
+	</body>
+</html>

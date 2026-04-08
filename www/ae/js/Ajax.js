@@ -4,6 +4,9 @@ export class Ajax
 {
 	static post(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'POST'}); }
 	static get(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'GET'}); }
+	static put(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'PUT'}); }
+	static patch(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'PATCH'}); }
+	static delete(url, options) { return Ajax.fetch(url, {...(options||{}), method: 'DELETE'}); }
 
 	static fetch(url, options)
 	{

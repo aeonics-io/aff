@@ -1,6 +1,9 @@
-Copyright (c) Aeonics srl. All rights reserved.
+This frontend framework is part of the Aeonics software.
 
-All material published in this repository is subject to the Aeonics License Agreement.
-There is no explicit not implied right granted for any purpose other than those granted by your version of the Aeonics License Agreement.
+The Aeonics software is licensed under two distinct licenses depending on the
+intended usage:
 
-To obtain a full copy of the Aeonics License Agreement upon purchase, please use the contact form on https://www.aeonics.io
+- `Aeonics Source Available License` (ASAL) for personal use.
+- `Aeonics Commercial Software License` (ACSL) for commercial use.
+
+Personal or commercial use is defined in the license definitions.

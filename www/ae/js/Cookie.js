@@ -11,7 +11,7 @@ export class Cookie
 	{
 		document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) +
 			';domain=' + location.hostname +
-			';SameSite=Lax' +
+			';SameSite=Lax;Secure' +
 			';max-age=31536000;expires=' + new Date(Date.now() + 31536000000).toUTCString() +
 			';path=' + (path ? path : '/' + location.pathname.split('/')[1]);
 	}
@@ -20,7 +20,7 @@ export class Cookie
 	{
 		document.cookie = encodeURIComponent(name) + '=' +
 			';domain=' + location.hostname +
-			';SameSite=Lax' +
+			';SameSite=Lax;Secure' +
 			';max-age=0;expires=' + new Date(0).toUTCString() +
 			';path=' + (path ? path : '/' + location.pathname.split('/')[1]);
 	}
