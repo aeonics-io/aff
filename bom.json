@@ -1,0 +1,32 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-01-01T00:00:00Z",
+    "component": {
+      "type": "framework",
+      "bom-ref": "aeonics-frontend",
+      "name": "aeonics-frontend",
+      "version": "1.0.0",
+      "description": "Aeonics Frontend Framework",
+      "supplier": {
+        "name": "Aeonics SRL",
+        "url": [ "https://aeonics.io" ]
+      },
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    },
+    "manufacturer": {
+      "name": "Aeonics SRL",
+      "url": [ "https://aeonics.io" ]
+    }
+  },
+  "components": [],
+  "dependencies": []
+}

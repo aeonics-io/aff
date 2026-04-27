@@ -6,5 +6,4 @@ export { default as Modal } from './js/Modal.js';
 export { default as Node } from './js/Node.js';
 export { default as Notify } from './js/Notify.js';
 export { default as Page } from './js/Page.js';
-export { default as Tour } from './js/Tour.js';
 export { default as Translator, locale } from './js/Translator.js';
