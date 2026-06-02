@@ -28,7 +28,7 @@ input, select {
 	box-sizing: border-box; font-family: body, sans-serif;
 	color: var(--text); background-color: transparent;
 }
-input[type="checkbox"], input[type="radio"] { width: unset; display: inline-block; margin: 1rem; }
+input[type="checkbox"], input[type="radio"] { width: unset !important; display: inline-block; margin: 1rem; }
 input:focus, select:focus { border-bottom-color: var(--accent); }
 
 .hidden { display: none !important; }
