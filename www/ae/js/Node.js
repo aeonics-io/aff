@@ -37,8 +37,6 @@ export class Node
 	static select(a, c) { 	return Node.create('select', a, c); }
 	static option(a, c) { 	return Node.create('option', a, c); }
 	static textarea(a, c) { return Node.create('textarea', a, c); }
-	static radio(a, c) { 	return Node.create('radio', a, c); }
-	static checkbox(a, c) { return Node.create('checkbox', a, c); }
 	static button(a, c) { 	return Node.create('button', a, c); }
 	static label(a, c) { 	return Node.create('label', a, c); }
 	static pre(a, c) { 		return Node.create('pre', a, c); }
@@ -56,7 +54,7 @@ export class Node
 	{
 		const node = tag instanceof HTMLElement || tag instanceof SVGElement ? tag : document.createElement(tag);
 
-		if( typeof attributes === 'string' || attributes instanceof HTMLElement || Array.isArray(attributes) )
+		if( typeof attributes === 'string' || attributes instanceof HTMLElement || attributes instanceof SVGElement || Array.isArray(attributes) )
 		{
 			const c = content;
 			content = attributes;
